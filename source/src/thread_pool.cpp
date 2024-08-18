@@ -3,7 +3,7 @@
 
 void ThreadPool::WorkerThread(ThreadPool *master)
 {
-    while (master->m_Alive)
+    while (master->m_Alive == 1)
     {
         Task *task = master->GetTask();
         if (task != nullptr)
@@ -19,7 +19,7 @@ void ThreadPool::WorkerThread(ThreadPool *master)
 
 ThreadPool::ThreadPool(size_t thread_count)
 {
-    m_Alive = true;
+    m_Alive = 1;
 
     if (thread_count == 0)
     {
@@ -34,13 +34,9 @@ ThreadPool::ThreadPool(size_t thread_count)
 
 ThreadPool::~ThreadPool()
 {
-    // 结束之前,先等待任务队列清空
-    while (!m_Tasks.empty())
-    {
-        std::this_thread::yield(); // 让出CPU时间片,把线程控制权交给操作系统
-    }
+    Wait();
 
-    m_Alive = false;
+    m_Alive = 0; // 设置线程池不再存活
 
     for (auto &thead : m_Threads)
     {
@@ -51,16 +47,42 @@ ThreadPool::~ThreadPool()
     std::cout << "ThreadPool is destroyed" << std::endl;
 }
 
+void ThreadPool::ParallelFor(size_t width, size_t height, const std::function<void(size_t, size_t)> &lambda)
+{
+    Guard guard(m_SpinLock);
+
+    for (size_t x = 0; x < width; x++)
+    {
+        for (size_t y = 0; y < height; y++)
+        {
+            m_Tasks.push_back(new ParallelForTask(x, y, lambda));
+        }
+    }
+}
+
+void ThreadPool::Wait() const
+{
+    // 等待任务队列清空
+    while (!m_Tasks.empty())
+    {
+        std::this_thread::yield(); // 让出CPU时间片,把线程控制权交给操作系统
+    }
+}
+
 void ThreadPool::AddTask(Task *task)
 {
-    std::lock_guard<std::mutex> lock(m_Mutex); // 加锁，每次进入这个函数都会加锁，离开这个函数会自动解锁
+    // std::lock_guard<std::mutex> lock(m_Mutex); // 加锁，每次进入这个函数都会加锁，离开这个函数会自动解锁
+
+    Guard guard(m_SpinLock); // 使用Guard类，自动管理锁的获取和释放
 
     m_Tasks.push_back(task);
 }
 
 Task *ThreadPool::GetTask()
 {
-    std::lock_guard<std::mutex> lock(m_Mutex);
+    // std::lock_guard<std::mutex> lock(m_Mutex);
+
+    Guard guard(m_SpinLock);
 
     if (m_Tasks.empty())
     {

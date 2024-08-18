@@ -6,5 +6,5 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 add_executable(CPUPathTracing ${SOURCES})
 
 target_include_directories(CPUPathTracing PUBLIC include)
-
-# target_link_libraries(CPUPathTracing PRIVATE glm)
+target_compile_definitions(CPUPathTracing PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS GLM_FORCE_LEFT_HANDED)
+target_link_libraries(CPUPathTracing PUBLIC glm)

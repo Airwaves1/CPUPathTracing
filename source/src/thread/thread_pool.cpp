@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-ThreadPool pool{};
+ThreadPool thread_pool{};
 
 void ThreadPool::WorkerThread(ThreadPool *master) {
   while (master->m_Alive == 1) {

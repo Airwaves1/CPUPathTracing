@@ -16,7 +16,8 @@ set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #资源文件配置
-add_definitions(-DOUTPUT_PATH="${CMAKE_SOURCE_DIR}/")
+add_definitions(-DPROJECT_ROOT_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
+message("++ PROJECT_ROOT_PATH: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_subdirectory(thirdparty/glm)
 add_subdirectory(source)

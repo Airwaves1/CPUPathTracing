@@ -1,6 +1,6 @@
 #include "sphere.hpp"
 
-std::optional<float> Sphere::intersect(const Ray &ray) const
+std::optional<HitInfo> Sphere::intersect(const Ray &ray, float t_min, float t_max) const
 {
     // 计算从球体中心到光线起点的向量 co
     glm::vec3 co = ray.origin - center; // 球体中心指向光线起点的向量
@@ -30,16 +30,20 @@ std::optional<float> Sphere::intersect(const Ray &ray) const
     // 计算光线与球体相交的最近点 t
     // t = (-b - sqrt(delta)) / (2 * a)
     float hit_t = (-b - glm::sqrt(delta)) * 0.5f / a;
+
     // 如果最近点 t 小于 0，表示交点在光线起点之前，检查另一个解
     if (hit_t < 0.0f)
     {
         // t = (-b + sqrt(delta)) / (2 * a)
         hit_t = (-b + glm::sqrt(delta)) * 0.5f / a;
     }
+
     // 如果 t 大于 0，表示光线与球体相交，返回 t 值
-    if (hit_t > 0.0f)
+    if (hit_t > t_min && hit_t < t_max)
     {
-        return hit_t;
+        glm::vec3 hit_point = ray.hit(hit_t);
+        glm::vec3 normal = glm::normalize(hit_point - center);
+        return HitInfo{hit_t, hit_point, normal};
     }
 
     // 如果光线与球体不相交或相交点在光线起点之前，返回 std::nullopt

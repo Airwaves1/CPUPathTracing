@@ -32,6 +32,11 @@ public:
 
   void Save(const std::filesystem::path &path);
 
+  void Clear() {
+    pixels.clear();
+    pixels.resize(width * height);
+  }
+
 private:
   size_t width;
   size_t height;

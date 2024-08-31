@@ -19,7 +19,7 @@ class BaseRenderer {
 public:
   BaseRenderer(Camera camera, Scene scene) : m_Camera(camera), m_Scene(scene) {}
 
-  void RenderToImage(std::string filename, int spp);
+  void RenderToImage(std::string filename, int spp = 1);
 
 protected:
   virtual glm::vec3 RenderPixel(const glm::ivec2 &pixel_coord) = 0;

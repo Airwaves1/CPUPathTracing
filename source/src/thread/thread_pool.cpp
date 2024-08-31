@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "util/profile.hpp"
+
 ThreadPool thread_pool{};
 
 void ThreadPool::WorkerThread(ThreadPool *master) {
@@ -51,6 +53,9 @@ ThreadPool::~ThreadPool() {
 void ThreadPool::ParallelFor(
     size_t width, size_t height,
     const std::function<void(size_t, size_t)> &lambda) {
+
+  PROFILE("ParallelFor");
+  
   Guard guard(m_SpinLock);
 
   for (size_t x = 0; x < width; x++) {

@@ -2,4 +2,4 @@
 
 #include "renderer/base_renderer.hpp"
 
-DEFINE_RENDERER(Normal)
+DEFINE_RENDERER(SimpleRT)

@@ -2,8 +2,14 @@
 #include "thread/thread_pool.hpp"
 #include "util/progress.hpp"
 #include <cstddef>
+#include <iostream>
+#include <string>
+
+#include "util/profile.hpp"
 
 void BaseRenderer::RenderToImage(std::string filename, int spp) {
+  PROFILE("RenderToImage " + std::to_string(spp) + "spp" + filename);
+
   size_t current_spp = 0;
   size_t increase = 1; // 一次并行for循环去渲染多少个spp
 
@@ -31,5 +37,16 @@ void BaseRenderer::RenderToImage(std::string filename, int spp) {
     increase = std::min<size_t>(current_spp, 32);
 
     film.Save(filename);
+
+    // 打印日志信息
+    if(current_spp == spp) {
+      std::cout << "\r ^-^ finished rendering, spp: " << spp << " , saved to " << filename
+                << std::endl;
+    } else {
+      std::cout << "\r" << current_spp << "spp has been rendered to " << filename
+                << std::endl;
+    }
+
+    // progress.Update(increase);
   }
 }

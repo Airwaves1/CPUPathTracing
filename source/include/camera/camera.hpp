@@ -23,7 +23,6 @@ private:
     glm::vec3 m_Pos;
     glm::vec3 m_LookAt;
     glm::vec3 m_Up;
-    glm::vec3 m_Right;
     float m_Fov;
 
     glm::mat4 m_ClipToCamera;   // 从裁剪空间到相机空间的变换矩阵, 就是透视投影矩阵的逆矩阵

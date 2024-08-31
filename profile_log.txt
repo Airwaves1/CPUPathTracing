@@ -1,0 +1,12 @@
+[2024-09-01 02:16:53] Profile "Load Model C:/Develop/Study/CG/CPUPathTracing/resources/models/simple_dragon.obj" took 16ms
+[2024-09-01 02:16:53] Profile "ParallelFor" took 55ms
+[2024-09-01 02:16:55] Profile "Save to C:/Develop/Study/CG/CPUPathTracing/output_simple_rt.ppm" took 44ms
+[2024-09-01 02:16:55] Profile "ParallelFor" took 35ms
+[2024-09-01 02:16:56] Profile "Save to C:/Develop/Study/CG/CPUPathTracing/output_simple_rt.ppm" took 47ms
+[2024-09-01 02:16:56] Profile "ParallelFor" took 27ms
+[2024-09-01 02:16:59] Profile "Save to C:/Develop/Study/CG/CPUPathTracing/output_simple_rt.ppm" took 48ms
+[2024-09-01 02:16:59] Profile "RenderToImage 4sppC:/Develop/Study/CG/CPUPathTracing/output_simple_rt.ppm" took 6630ms
+[2024-09-01 02:16:59] Profile "ParallelFor" took 29ms
+[2024-09-01 02:17:00] Profile "Save to C:/Develop/Study/CG/CPUPathTracing/output_normal.ppm" took 46ms
+[2024-09-01 02:17:00] Profile "RenderToImage 1sppC:/Develop/Study/CG/CPUPathTracing/output_normal.ppm" took 717ms
+[2024-09-01 02:17:00] Profile "Render Job" took 7351ms

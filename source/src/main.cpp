@@ -1,5 +1,3 @@
-#include <chrono>
-#include <iostream>
 
 #include "camera/camera.hpp"
 #include "camera/film.hpp"
@@ -10,18 +8,13 @@
 #include "shape/sphere.hpp"
 
 #include "renderer/normal_renderer.hpp"
+#include "renderer/simple_rt_renderer.hpp"
+#include "util/profile.hpp"
 #include "util/rgb.hpp"
 
-
-#ifdef PROJECT_ROOT_PATH
-#define OUTPUT_PATH PROJECT_ROOT_PATH "/output.ppm"
-#define RESOURCE_PATH PROJECT_ROOT_PATH "/resources/"
-#define MODEL_PATH PROJECT_ROOT_PATH "/resources/models/"
-#endif
+#include "util/file_util.hpp"
 
 int main() {
-  std::cout << "--------------CPU Ray Tracing--------------" << std::endl;
-
   // 创建一个1920x1080的胶片
   Film film{192 * 4, 108 * 4};
 
@@ -47,19 +40,15 @@ int main() {
   scene.AddShape(sphere, {{1, 1, 1}, true, RGB(128, 255, 128)}, {3.5, 0.5, -2});
   scene.AddShape(plane, {RGB{120, 204, 157}}, {0, -0.5, 0});
 
-  // 创建渲染器
-  NormalRenderer renderer{camera, scene};
-
-  // 开始计时
-  auto start = std::chrono::high_resolution_clock::now();
-
   // 渲染图像
-  renderer.RenderToImage(OUTPUT_PATH, 1);
+  PROFILE("Render Job");
 
-  // 结束计时
-  auto end = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> elapsed = end - start;
-  std::cout << "ParallelFor execution time: " << elapsed.count() << " seconds"
-            << std::endl;
+  SimpleRTRenderer rt_renderer{camera, scene};
+  rt_renderer.RenderToImage(ROOT_DIR + "output_simple_rt.ppm", 4);
+
+  film.Clear();
+  NormalRenderer normal_renderer{camera, scene};
+  normal_renderer.RenderToImage(ROOT_DIR + "output_normal.ppm", 1);
+
   return 0;
 }

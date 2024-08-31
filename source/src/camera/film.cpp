@@ -3,12 +3,15 @@
 #include <fstream>
 #include <iostream>
 #include "util/rgb.hpp"
+#include "util/profile.hpp"
 
 Film::Film(size_t width, size_t height) : width(width), height(height) {
   pixels.resize(width * height);
 }
 
 void Film::Save(const std::filesystem::path &path) {
+  PROFILE("Save to " + path.string());
+
   std::ofstream file(path, std::ios::binary);
 
   file << "P6\n";
@@ -28,5 +31,4 @@ void Film::Save(const std::filesystem::path &path) {
 
   file.close();
 
-  std::cout << "Save image to " << path << std::endl;
 }

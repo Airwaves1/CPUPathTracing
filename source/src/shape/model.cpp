@@ -1,4 +1,4 @@
-#include "model.hpp"
+#include "shape/model.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -58,11 +58,11 @@ Model::Model(const std::filesystem::path &file_path)
     m_Triangles.shrink_to_fit();
 
     // 4. 打印模型信息
-    PrintModelInfo();
+    // PrintModelInfo();
 }
 
 // 测试射线与模型中的所有三角形的相交情况，返回最近的相交信息
-std::optional<HitInfo> Model::intersect(const Ray &ray, float t_min, float t_max) const
+std::optional<HitInfo> Model::Intersect(const Ray &ray, float t_min, float t_max) const
 {
     std::optional<HitInfo> closestHit;
 
@@ -70,7 +70,7 @@ std::optional<HitInfo> Model::intersect(const Ray &ray, float t_min, float t_max
     for (const auto &triangle : m_Triangles)
     {
         // 测试射线与当前三角形的相交情况
-        if (auto hit = triangle.intersect(ray, t_min, t_max))
+        if (auto hit = triangle.Intersect(ray, t_min, t_max))
         {
             // 如果当前三角形有相交点，且该相交点比之前记录的最近相交点更近，则更新最近相交点
             if (!closestHit || hit->t < closestHit->t)

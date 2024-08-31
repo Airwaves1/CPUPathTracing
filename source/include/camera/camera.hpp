@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "film.hpp"
-#include "ray.hpp"
+#include "camera/ray.hpp"
 
 class Camera
 {
@@ -12,7 +12,7 @@ public:
     //  从屏幕空间坐标生成光线，返回世界空间中的光线
     //  将像素坐标从图像空间转换到世界空间
     //  光线的起始位置是相机的位置，方向是从相机位置指向像素坐标的世界空间位置
-    Ray GenerateRay(const glm::ivec2 &pixelCoord, const glm::vec2 &offset = {0.5, 0.5}) const;
+    Ray GenerateRay(const glm::ivec2 &pixelCoord, const float offset_x = 0.5, const float offset_y = 0.5) const;
 
     Film &GetFilm() { return m_Film; }
     const Film &GetFilm() const { return m_Film; }

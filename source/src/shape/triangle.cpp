@@ -1,4 +1,4 @@
-#include "triangle.hpp"
+#include "shape/triangle.hpp"
 
 // intersect 函数用于测试射线与三角形的相交
 // Möller-Trumbore  算法
@@ -8,7 +8,7 @@
 // - 如果相交，返回包含相交信息的 HitInfo 结构体；否则返回 std::nullopt
 
 std::optional<HitInfo>
-Triangle::intersect(const Ray &ray, float t_min, float t_max) const
+Triangle::Intersect(const Ray &ray, float t_min, float t_max) const
 {
     // 1.计算三角形的边向量
     glm::vec3 e1 = v1 - v0;
@@ -36,7 +36,7 @@ Triangle::intersect(const Ray &ray, float t_min, float t_max) const
 
     // 5.计算相交点的法向量, 将三个顶点的法向量进行插值
     glm::vec3 normal = glm::normalize(n0 * (1.0f - b1 - b2) + n1 * b1 + n2 * b2);
-    glm::vec3 hit_point = ray.hit(hit_t);
+    glm::vec3 hit_point = ray.Hit(hit_t);
 
     return HitInfo{hit_t, hit_point, normal};
 }

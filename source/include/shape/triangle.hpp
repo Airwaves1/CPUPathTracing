@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shape.hpp"
+#include "shape/shape.hpp"
 
 struct Triangle : public Shape
 {
@@ -17,7 +17,7 @@ struct Triangle : public Shape
         n0 = n1 = n2 = glm::normalize(normal);
     }
 
-    std::optional<HitInfo> intersect(const Ray &ray, float t_min, float t_max) const override;
+    std::optional<HitInfo> Intersect(const Ray &ray, float t_min, float t_max) const override;
 
     glm::vec3 v0, v1, v2;   // 三角形的三个顶点
     glm::vec3 n0, n1, n2;   // 三角形的三个法向量

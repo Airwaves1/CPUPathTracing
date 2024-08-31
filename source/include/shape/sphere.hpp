@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ray.hpp"
+#include "camera/ray.hpp"
 #include "shape.hpp"
 #include <optional>
 
@@ -13,5 +13,5 @@ struct Sphere : public Shape
     glm::vec3 center;
     float radius;
 
-    std::optional<HitInfo> intersect(const Ray &ray, float t_min, float t_max) const override;
+    std::optional<HitInfo> Intersect(const Ray &ray, float t_min, float t_max) const override;
 };

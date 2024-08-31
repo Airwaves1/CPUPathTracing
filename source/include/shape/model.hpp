@@ -1,6 +1,6 @@
 #pragma once
 
-#include "triangle.hpp"
+#include "shape/triangle.hpp"
 #include <filesystem>
 
 class Model : public Shape
@@ -10,7 +10,7 @@ public:
 
     Model(const std::filesystem::path &filen_path);
 
-    std::optional<HitInfo> intersect(const Ray &ray, float t_min, float t_max) const override;
+    std::optional<HitInfo> Intersect(const Ray &ray, float t_min, float t_max) const override;
 
     void PrintModelInfo() const;
 

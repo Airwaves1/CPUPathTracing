@@ -59,3 +59,6 @@ class ThreadPool {
 
   SpinLock m_SpinLock{};
 };
+
+
+extern ThreadPool thread_pool;

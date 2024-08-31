@@ -1,4 +1,4 @@
-#include "camera.hpp"
+#include "camera/camera.hpp"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
@@ -12,9 +12,9 @@ Camera::Camera(Film &film, const glm::vec3 &pos, const glm::vec3 &lookAt, float 
     m_CameraToWorld = glm::inverse(glm::lookAt(m_Pos, m_LookAt, m_Up));
 }
 
-Ray Camera::GenerateRay(const glm::ivec2 &pixelCoord, const glm::vec2 &offset) const
+Ray Camera::GenerateRay(const glm::ivec2 &pixelCoord, const float offset_x, const float offset_y) const
 {
-    glm::vec2 ndc = (glm::vec2(pixelCoord) + offset) / glm::vec2(m_Film.GetWidth(), m_Film.GetHeight());
+    glm::vec2 ndc = (glm::vec2(pixelCoord) + glm::vec2(offset_x, offset_y)) / glm::vec2(m_Film.GetWidth(), m_Film.GetHeight());
     ndc.y = 1.0f - ndc.y;
     ndc = ndc * 2.0f - 1.0f;
 

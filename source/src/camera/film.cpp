@@ -1,34 +1,40 @@
 #include "camera/film.hpp"
+#include "thread/thread_pool.hpp"
+#include "util/rgb.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
-#include "util/rgb.hpp"
-#include "util/profile.hpp"
+#include <vector>
 
 Film::Film(size_t width, size_t height) : width(width), height(height) {
   pixels.resize(width * height);
 }
 
 void Film::Save(const std::filesystem::path &path) {
-  PROFILE("Save to " + path.string());
-
   std::ofstream file(path, std::ios::binary);
 
   file << "P6\n";
   file << width << " " << height << "\n";
   file << "255\n";
 
-  for (size_t y = 0; y < height; y++) {
-    for (size_t x = 0; x < width; x++) {
+  std::vector<uint8_t> buffer(width * height * 3);
 
-      auto pixel = GetPixel(x, y);
-      RGB rgb(pixel.color / static_cast<float>(pixel.sample_count));
+  thread_pool.ParallelFor(
+      width, height,
+      [&](size_t x, size_t y) {
+        auto pixel = GetPixel(x, y);
+        RGB rgb(pixel.color / static_cast<float>(pixel.sample_count));
+        auto idx = (y * width + x) * 3;
+        buffer[idx + 0] = rgb.r;
+        buffer[idx + 1] = rgb.g;
+        buffer[idx + 2] = rgb.b;
+      },
+      false);
 
-      file << static_cast<uint8_t>(rgb.r) << static_cast<uint8_t>(rgb.g)
-           << static_cast<uint8_t>(rgb.b);
-    }
-  }
+  thread_pool.Wait();
+
+  file.write(reinterpret_cast<char *>(buffer.data()), buffer.size());
 
   file.close();
-
 }

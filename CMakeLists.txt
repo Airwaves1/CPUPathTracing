@@ -22,4 +22,5 @@ add_definitions(-DPROJECT_ROOT_PATH="${CMAKE_CURRENT_SOURCE_DIR}")
 message("++ PROJECT_ROOT_PATH: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_subdirectory(thirdparty/glm)
+add_subdirectory(thirdparty/rapidobj)
 add_subdirectory(source)

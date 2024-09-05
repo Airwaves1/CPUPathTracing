@@ -28,19 +28,18 @@ glm::vec3 SimpleRTRenderer::RenderPixel(const glm::ivec2 &pixel_coord) {
         glm::vec3 view_direction = frame.WorldToLocal(-ray.direction);
         new_light_dir = {-view_direction.x, view_direction.y,
                          -view_direction.z};
-
       } else {
         // 生成随机漫反射光线，使用半球采样，即在半球内生成均匀分布的光线，如果生成的采样点在下半球，则取反；并且必须在半球内生成
         do {
           new_light_dir = {m_RandomGenerator.Uniform(),
                            m_RandomGenerator.Uniform(),
                            m_RandomGenerator.Uniform()};
+          new_light_dir = new_light_dir * 2.0f - 1.0f;
         } while (glm::length(new_light_dir) > 1.0f);
 
         new_light_dir = new_light_dir.y > 0 ? new_light_dir : -new_light_dir;
-
-        ray.direction = frame.LocalToWorld(new_light_dir);
       }
+      ray.direction = frame.LocalToWorld(new_light_dir);
     } else {
       break;
     }

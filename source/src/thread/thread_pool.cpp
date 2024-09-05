@@ -1,8 +1,8 @@
 #include "thread/thread_pool.hpp"
 
+#include <cmath>
+#include <cstddef>
 #include <iostream>
-
-#include "util/profile.hpp"
 
 ThreadPool thread_pool{};
 
@@ -11,9 +11,8 @@ void ThreadPool::WorkerThread(ThreadPool *master) {
     Task *task = master->GetTask();
     if (task != nullptr) {
       task->Run();
-
+      delete task;
       master->m_Pending_task_count--;
-
     } else {
       std::this_thread::yield(); // 让出CPU时间片,把线程控制权交给操作系统
     }
@@ -45,24 +44,40 @@ ThreadPool::~ThreadPool() {
   }
   m_Threads.clear();
 
-  m_Pending_task_count = 0;
-
   std::cout << "ThreadPool is destroyed" << std::endl;
 }
 
-void ThreadPool::ParallelFor(
-    size_t width, size_t height,
-    const std::function<void(size_t, size_t)> &lambda) {
+void ThreadPool::ParallelFor(size_t width, size_t height,
+                             const std::function<void(size_t, size_t)> &lambda,
+                             bool complex) {
 
-  PROFILE("ParallelFor");
-  
   Guard guard(m_SpinLock);
 
-  for (size_t x = 0; x < width; x++) {
-    for (size_t y = 0; y < height; y++) {
-      m_Pending_task_count++;
+  float chunk_width_float =
+      static_cast<float>(width) / sqrt(m_Threads.size());
+  float chunk_height_float =
+      static_cast<float>(height) / sqrt(m_Threads.size());
 
-      m_Tasks.push(new ParallelForTask(x, y, lambda));
+  if (complex) {
+    // 如果是复杂任务，那么每个任务的大小为16
+    chunk_width_float /= sqrt(16);
+    chunk_height_float /= sqrt(16);
+  }
+
+  size_t chunk_width = std::ceil(chunk_width_float);
+  size_t chunk_height = std::ceil(chunk_height_float);
+
+  for (size_t x = 0; x < width; x += chunk_width) {
+    for (size_t y = 0; y < height; y += chunk_height) {
+      m_Pending_task_count++;
+      if (x + chunk_width > width) {
+        chunk_width = width - x;
+      }
+      if (y + chunk_height > height) {
+        chunk_height = height - y;
+      }
+      m_Tasks.push(
+          new ParallelForTask(x, y, chunk_width, chunk_height, lambda));
     }
   }
 }

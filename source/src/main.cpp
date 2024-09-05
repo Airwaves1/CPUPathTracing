@@ -14,7 +14,8 @@
 
 #include "util/file_util.hpp"
 
-int main() {
+int main()
+{
   // 创建一个1920x1080的胶片
   Film film{192 * 4, 108 * 4};
 
@@ -33,22 +34,21 @@ int main() {
   // 创建场景
   Scene scene{};
 
-  scene.AddShape(model, {RGB(202, 159, 117)}, {0, 0, 0}, {1, 3, 2}, {0, 0, 0});
+  scene.AddShape(model, {RGB(202, 159, 117), false}, {0, 0, 0}, {1, 3, 2}, {0, 0, 0});
   scene.AddShape(sphere, {{1, 1, 1}, false, RGB(255, 128, 128)}, {0, 0.0, 2.5});
   scene.AddShape(sphere, {{1, 1, 1}, false, RGB(128, 128, 255)},
                  {0, 0.0, -2.5});
-  scene.AddShape(sphere, {{1, 1, 1}, true, RGB(128, 255, 128)}, {3.5, 0.5, -2});
+  scene.AddShape(sphere, {{1, 1, 1}, true}, {3.5, 0.5, -2});
   scene.AddShape(plane, {RGB{120, 204, 157}}, {0, -0.5, 0});
 
-  // 渲染图像
-  PROFILE("Render Job");
-
   SimpleRTRenderer rt_renderer{camera, scene};
-  rt_renderer.RenderToImage(ROOT_DIR + "output_simple_rt.ppm", 4);
+  rt_renderer.RenderToImage(ROOT_DIR + "output_simple_rt.ppm", 128);
 
   film.Clear();
+  // 渲染图像
+  PROFILE("Render Job");
   NormalRenderer normal_renderer{camera, scene};
-  normal_renderer.RenderToImage(ROOT_DIR + "output_normal.ppm", 1);
+  normal_renderer.RenderToImage(ROOT_DIR + "output_normal.ppm", 4);
 
   return 0;
 }

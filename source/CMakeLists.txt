@@ -7,4 +7,7 @@ add_executable(CPUPathTracing ${SOURCES})
 
 target_include_directories(CPUPathTracing PUBLIC include)
 target_compile_definitions(CPUPathTracing PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE GLM_FORCE_RADIANS GLM_FORCE_LEFT_HANDED)
-target_link_libraries(CPUPathTracing PUBLIC glm)
+
+target_compile_definitions(CPUPathTracing PUBLIC WITH_DEBUG_INFO)
+
+target_link_libraries(CPUPathTracing PUBLIC glm rapidobj)
